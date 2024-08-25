@@ -1,0 +1,179 @@
+/* Reset some default styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-image: url(../assets/background.jpg);
+    background-position: center;
+    background-repeat: none;
+    background-size: cover;
+}
+hr{
+    width: 100%;
+    height: 3px !important;
+    color: white;
+    background-color: #FFFFFF;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #000000;
+    color: #E50914; /* Cor do texto da navbar */
+}
+
+.nav-left {
+    font-size: 50px;
+    font-family: 'Bebas', 'Helvetica Neue', Arial;
+    font-weight: bold;
+}
+
+.nav-right {
+    font-size: 16px;
+}
+
+.signup-button {
+    background-color: #E50914; /* Cor de fundo do botão */
+    color: #FFFFFF; /* Cor do texto do botão */
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.login-container {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 80px); /* Ajusta a altura para considerar a navbar */
+}
+
+.login-form {
+    width: 500px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8); /* Cor preta com transparência */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    text-align: left;
+}
+
+.login-form input {
+    width: 100%;
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.login-form button {
+    background-color: #E50914; /* Cor do botão */
+    color: #ffffff; /* Cor do texto do botão */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: calc(100% - 20px);
+}
+
+.forgot-password {
+    display: block;
+    margin: 10px 0;
+    color: #E50914; /* Cor do link de "esqueceu a senha?" */
+    text-decoration: none;
+}
+
+.signup-link {
+    display: block;
+    margin-top: 10px;
+    color: #E50914; /* Cor do link de "cadastre-se" */
+    text-decoration: none;
+}
+
+@font-face{
+    font-family: 'Bebas';
+    src: url(../assets/fonts/bebas/Bebas-Regular.ttf);
+    font-weight: normal;
+}
+
+.mb-2{
+    margin-bottom: 10px!important;
+}
+
+/* Estilização do Modal */
+.modal {
+    display: none; /* Oculto por padrão */
+    position: fixed;
+    z-index: 1; /* Fica sobreposto ao conteúdo */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permite rolagem se o conteúdo for maior que a tela */
+    background-color: rgba(0, 0, 0, 0.8); /* Fundo preto com transparência */
+}
+
+.modal-content {
+    background-color: #000000; /* Fundo preto */
+    display: flex;
+    flex-direction: column;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #E50914;
+    width: 80%;
+    max-width: 400px;
+    max-height: 500px;
+    border-radius: 10px;
+    color: #ffffff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+
+}
+
+
+
+.modal-content input {
+    display: block;
+    width: calc(100% - 20px);
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.modal-content button {
+    background-color: #E50914;
+    color: #ffffff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: calc(100% - 20px);
+}
+
+.close {
+    color: #ffffff;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #E50914;
+    text-decoration: none;
+    cursor: pointer;
+}
