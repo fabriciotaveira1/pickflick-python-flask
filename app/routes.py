@@ -24,7 +24,7 @@ def logar():
         nome = usuario_existente.username
         id = usuario_existente.user_id
         
-        return render_template('filmes.html', nome=nome, id=id)
+        return render_template('filmes.html', nome=nome, email=email, id=id)
     else:
         error = 'Email ou senha inválido'
         return render_template('index.html', error=error)
@@ -33,6 +33,7 @@ def logar():
 def pesquisar():
     nome_filme = request.form.get('nome_filme')
     try:
+        
         resultados = api_service.filtrar_filmes(nome_filme)
         return render_template('filmes.html', nome='', id='', resultados=resultados.get('results', []))
     except request.exceptions.HTTPError as e:
