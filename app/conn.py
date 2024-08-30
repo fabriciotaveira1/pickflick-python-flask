@@ -2,9 +2,11 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.automap import automap_base
 from app.models import Ratings, User_preferences, User
+import urllib.parse
+
 # Configurações de conexão
 user = 'root'
-password = ''
+password = urllib.parse.quote_plus('senai@123')
 host = 'localhost'
 database = 'pickflick'
 

@@ -30,34 +30,25 @@
 
     <main>
         <!-- Seção de Pesquisa -->
-        <!-- Seção de Pesquisa -->
         <section id="pesquisar">
-            <form id="form-pesquisar" class="form-pesquisar">
-                <input type="text" placeholder="Digite o nome do filme...">
+            <h3 style="text-align: center;">Seja Bem-vindo {{ nome }}</h3>
+            <form id="form-pesquisar" class="form-pesquisar" method="POST" action="{{ url_for('main.pesquisar') }}">
+                <input type="text" name="nome_filme" placeholder="Digite o nome do filme...">
                 <button type="submit">Pesquisar</button>
             </form>
             <div id="resultados-pesquisa">
                 <!-- filmes adicionados dinamicamente -->
-                <div class="card-filme">
-                    <img src="capa1.jpg" alt="Capa do Filme 1">
-                    <h3>Filme 1</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
-                <div class="card-filme">
-                    <img src="capa2.jpg" alt="Capa do Filme 2">
-                    <h3>Filme 2</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
-                <div class="card-filme">
-                    <img src="capa3.jpg" alt="Capa do Filme 3">
-                    <h3>Filme 3</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
-                <div class="card-filme">
-                    <img src="capa4.jpg" alt="Capa do Filme 4">
-                    <h3>Filme 4</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
+                {% if resultados %}
+                    {% for filme in resultados %}
+                        <div class="card-filme">
+                            <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" alt="Capa do Filme">
+                            <h3>{{ filme.title }}</h3>
+                            <div class="hover-message">{{ filme.overview }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Nenhum resultado encontrado.</p>
+                {% endif %}
             </div>
         </section>
 
