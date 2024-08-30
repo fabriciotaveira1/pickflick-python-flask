@@ -1,0 +1,84 @@
+/* Estilização do formulário de pesquisa */
+.form-pesquisar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.form-pesquisar input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 300px;
+}
+
+.form-pesquisar button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    font-weight: bold;
+    border-radius: 4px;
+    background-color: #E50914;
+    color: #fff;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.form-pesquisar button:hover {
+    background-color: white;
+}
+
+/* Estilização dos cards de filmes */
+#resultados-pesquisa, #lista-recomendados {
+    display: flex;
+    margin-top: 50px;
+    margin-bottom: 100px;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card-filme {
+    position: relative;
+    width: 200px;
+    height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    text-align: center;
+    background-color: #f9f9f9;
+    transition: transform 0.3s ease;
+}
+
+.card-filme img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.card-filme h3 {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.card-filme .hover-message {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.card-filme:hover .hover-message {
+    transform: translateY(0);
+}
+
+.card-filme:hover {
+    transform: scale(1.05);
+}

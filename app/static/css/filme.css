@@ -1,0 +1,74 @@
+/* Estilização do header */
+.nav-down {
+    background-color: #E50914;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* Estilização do main */
+main {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Estilização do card de detalhes do filme */
+#detalhes-filme {
+    width: 70%;
+    display: flex;
+    gap: 20px;
+}
+
+.card-detalhes {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    background-color: #eee;
+    max-width: 800px;
+    width: 100%;
+}
+
+.info-filme {
+    flex: 1;
+}
+
+.imagem-filme img {
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.card-detalhes h2 {
+    margin-top: 0;
+}
+
+/* Estilização da avaliação do filme */
+.avaliacao-filme {
+    margin-top: 20px;
+}
+
+.estrelas {
+    font-size: 24px;
+}
+
+.estrelas .estrela {
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.estrelas .estrela:hover,
+.estrelas .estrela:hover ~ .estrela {
+    color: #ffcc00;
+}

@@ -1,0 +1,50 @@
+/* Estilização do Main */
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 40px;
+}
+
+section h2 {
+    border-bottom: 2px solid #E50914;
+    padding-bottom: 10px;
+}
+
+form input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #333333; /* Fundo cinza escuro */
+    color: #ffffff; /* Texto branco */
+}
+
+form button {
+    background-color: #E50914; /* Fundo vermelho */
+    color: #ffffff; /* Texto branco */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+form button:hover {
+    background-color: #ffffff; /* Fundo branco no hover */
+    color: #E50914; /* Texto vermelho no hover */
+}
+
+#lista-recomendados {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+#lista-recomendados .filme {
+    width: calc(33.333% - 40px);
+}
+
+

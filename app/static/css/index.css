@@ -1,9 +1,4 @@
-/* Reset some default styles */
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
+
 
 body {
     background-image: url(../assets/background.jpg);
@@ -18,24 +13,38 @@ hr{
     background-color: #FFFFFF;
 }
 
-nav {
+/* Reset padrão para a lista */
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Estilização dos itens da lista */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px;
     background-color: #000000;
-    color: #E50914; /* Cor do texto da navbar */
+    border-bottom: 2px solid #E50914; /* Linha inferior vermelha */
 }
 
 .nav-left {
-    font-size: 50px;
-    font-family: 'Bebas', 'Helvetica Neue', Arial;
-    font-weight: bold;
+    font-size: 36px;
+    font-family: 'Bebas';
+    color: #E50914;
 }
 
-.nav-right {
-    font-size: 16px;
+.nav-right a {
+    background-color: #E50914;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
 }
+
 
 .signup-button {
     background-color: #E50914; /* Cor de fundo do botão */
@@ -176,4 +185,20 @@ nav {
     color: #E50914;
     text-decoration: none;
     cursor: pointer;
+}
+
+footer {
+    background-color: #000000; /* Fundo preto */
+    color: #E50914; /* Texto na cor vermelho (#E50914) */
+    text-align: center; /* Centraliza o texto */
+    padding: 20px; /* Espaçamento interno */
+    position: fixed; /* Fixa o footer no fundo da página */
+    bottom: 0;
+    width: 100%; /* Largura total da página */
+    font-size: 14px; /* Tamanho da fonte */
+    border-top: 2px solid #E50914; /* Linha superior vermelha */
+}
+
+footer p {
+    margin: 0; /* Remove margem padrão */
 }

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PickFlick - Sistema de Recomendação de Filmes</title>
+    <link rel="stylesheet" href="../static/css/header.css">
+    <link rel="stylesheet" href="../static/css/filmes.css">
+    <link rel="stylesheet" href="../static/css/filmesPesquisados.css">
+    <link rel="stylesheet" href="../static/css/global.css">
+</head>
+
+<body>
+    <header>
+        <nav class="nav-up">
+            <ul class="navbar">
+                <li class="nav-left">PickFlick</li>
+                <li class="nav-middle">
+                    <a href="#pesquisar">Pesquisar Filmes</a>
+                    <a href="#recomendados">Filmes Recomendados</a>
+                    <a href="#recomendados">Minhas Avaliações</a>
+                </li>
+                <li class="nav-right">
+                    <a href="#" class="signup-button" id="openSignupModal">Sair</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Seção de Pesquisa -->
+        <!-- Seção de Pesquisa -->
+        <section id="pesquisar">
+            <form id="form-pesquisar" class="form-pesquisar">
+                <input type="text" placeholder="Digite o nome do filme...">
+                <button type="submit">Pesquisar</button>
+            </form>
+            <div id="resultados-pesquisa">
+                <!-- filmes adicionados dinamicamente -->
+                <div class="card-filme">
+                    <img src="capa1.jpg" alt="Capa do Filme 1">
+                    <h3>Filme 1</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+                <div class="card-filme">
+                    <img src="capa2.jpg" alt="Capa do Filme 2">
+                    <h3>Filme 2</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+                <div class="card-filme">
+                    <img src="capa3.jpg" alt="Capa do Filme 3">
+                    <h3>Filme 3</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+                <div class="card-filme">
+                    <img src="capa4.jpg" alt="Capa do Filme 4">
+                    <h3>Filme 4</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Seção de Filmes Recomendados -->
+        <section id="recomendados">
+            <h2>Filmes Recomendados</h2>
+            <div id="lista-recomendados">
+                <!-- Lista de filmes recomendados  -->
+                <div class="card-filme">
+                    <img src="capa1.jpg" alt="Capa do Filme 1">
+                    <h3>Filme 1</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+                <div class="card-filme">
+                    <img src="capa1.jpg" alt="Capa do Filme 1">
+                    <h3>Filme 1</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+                <div class="card-filme">
+                    <img src="capa1.jpg" alt="Capa do Filme 1">
+                    <h3>Filme 1</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+                <div class="card-filme">
+                    <img src="capa1.jpg" alt="Capa do Filme 1">
+                    <h3>Filme 1</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+                <div class="card-filme">
+                    <img src="capa1.jpg" alt="Capa do Filme 1">
+                    <h3>Filme 1</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+                <div class="card-filme">
+                    <img src="capa1.jpg" alt="Capa do Filme 1">
+                    <h3>Filme 1</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+                <div class="card-filme">
+                    <img src="capa1.jpg" alt="Capa do Filme 1">
+                    <h3>Filme 1</h3>
+                    <div class="hover-message">Escolher Filme</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Sistema de Recomendação de Filmes</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

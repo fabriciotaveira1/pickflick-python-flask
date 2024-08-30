@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Filme</title>
+    <!-- Link para o CSS externo -->
+    <link rel="stylesheet" href="../static/css/filme.css">
+    <link rel="stylesheet" href="../static/css/header.css"> <!-- Link para o CSS externo -->
+    <link rel="stylesheet" href="../static/css/global.css"> <!-- Link para o CSS externo -->
+</head>
+
+<body>
+    <header>
+        <nav class="nav-up">
+            <ul class="navbar">
+                <li class="nav-left">PickFlick</li>
+                <li class="nav-middle">
+                    <a href="#pesquisar">Pesquisar Filmes</a>
+                    <a href="#recomendados">Filmes Recomendados</a>
+                    <a href="#recomendados">Minhas Avaliações</a>
+                </li>
+                <li class="nav-right">
+                    <a href="#" class="signup-button" id="openSignupModal">Sair</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="nav-down">
+            <h1>Detalhes do Filme</h1>
+            <nav>
+                <a href="index.html">Voltar à Pesquisa</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="detalhes-filme">
+            <div class="card-detalhes">
+                <div class="info-filme">
+                    <h2>Nome do Filme</h2>
+                    <p><strong>Gênero:</strong> Ação, Aventura</p>
+                    <p><strong>Ano de Lançamento:</strong> 2024</p>
+                    <p><strong>Duração:</strong> 120 min</p>
+                    <p><strong>Diretor:</strong> Nome do Diretor</p>
+                </div>
+                <div class="imagem-filme">
+                    <img src="capa-filme.jpg" alt="Capa do Filme">
+                </div>
+            </div>
+            <div class="avaliacao-filme">
+                <h3>Avaliação:</h3>
+                <div class="estrelas">
+                    <span class="estrela">&#9733;</span>
+                    <span class="estrela">&#9733;</span>
+                    <span class="estrela">&#9733;</span>
+                    <span class="estrela">&#9733;</span>
+                    <span class="estrela">&#9733;</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Sistema de Recomendação de Filmes</p>
+    </footer>
+
+    <script src="script.js"></script> <!-- Link para o JavaScript externo -->
+</body>
+
+</html>
