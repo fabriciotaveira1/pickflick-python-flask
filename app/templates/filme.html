@@ -38,14 +38,15 @@
         <section id="detalhes-filme">
             <div class="card-detalhes">
                 <div class="info-filme">
-                    <h2>Nome do Filme</h2>
-                    <p><strong>Gênero:</strong> Ação, Aventura</p>
-                    <p><strong>Ano de Lançamento:</strong> 2024</p>
-                    <p><strong>Duração:</strong> 120 min</p>
+                    <h2>{{ filme.title }}</h2>
+                    <p><strong>Gênero:</strong> {{ filme.genres }}</p>
+                    <p><strong>Ano de Lançamento:</strong> {{ filme.release_date }}</p>
+                    <p><strong>Duração:</strong> {{ filme.runtime }}</p>
                     <p><strong>Diretor:</strong> Nome do Diretor</p>
+                    <p><strong>Sinopse:</strong>{{ filme.overview }}</p>
                 </div>
                 <div class="imagem-filme">
-                    <img src="capa-filme.jpg" alt="Capa do Filme">
+                    <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" alt="Capa do Filme">
                 </div>
             </div>
             <div class="avaliacao-filme">

@@ -38,3 +38,9 @@ def pesquisar():
         return render_template('filmes.html', nome='', id='', resultados=resultados.get('results', []))
     except request.exceptions.HTTPError as e:
         return render_template('filmes.html', nome='', id='', error=f'Erro na requisição: {e}')
+    
+@main.route('/filme/<int:id>', methods=['GET'])
+def get_filme(id):
+    filme = api_service.get_filme_by_id(id)
+    return render_template('filme.html', filme=filme)
+    

@@ -40,7 +40,7 @@
                 <!-- filmes adicionados dinamicamente -->
                 {% if resultados %}
                     {% for filme in resultados %}
-                        <div class="card-filme">
+                        <div class="card-filme" data-id="{{ filme.id }}">
                             <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" alt="Capa do Filme">
                             <h3>{{ filme.title }}</h3>
                             <div class="hover-message">{{ filme.overview }}</div>
@@ -101,7 +101,7 @@
         <p>&copy; 2024 Sistema de Recomendação de Filmes</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="../static/js/filmes.js"></script>
 </body>
 
 </html>

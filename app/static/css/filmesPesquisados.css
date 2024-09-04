@@ -49,6 +49,7 @@
     text-align: center;
     background-color: #000000;
     transition: transform 0.3s ease;
+    cursor: pointer;
 }
 
 .card-filme img {
