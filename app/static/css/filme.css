@@ -60,15 +60,26 @@ main {
 
 .estrelas {
     font-size: 24px;
+    display: inline-block;
+    direction: rtl; /* Reverte a direção para facilitar a seleção */
+    unicode-bidi: bidi-override; /* Faz com que a direção RTL funcione corretamente */
 }
 
-.estrelas .estrela {
-    color: #ccc;
+.estrelas input {
+    display: none; /* Esconde os inputs de rádio */
+}
+
+/* Estilos das estrelas */
+.estrelas label {
+    color: #ccc; /* Cor das estrelas não selecionadas */
     cursor: pointer;
-    transition: color 0.3s ease;
+    font-size: 24px;
+    display: inline-block;
 }
 
-.estrelas .estrela:hover,
-.estrelas .estrela:hover ~ .estrela {
-    color: #ffcc00;
+/* Preenche as estrelas com cor ao passar o mouse */
+.estrelas input:checked ~ label,
+.estrelas label:hover ~ label,
+.estrelas label:hover {
+    color: #ffcc00; /* Cor das estrelas preenchidas */
 }

@@ -49,16 +49,31 @@
                     <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" alt="Capa do Filme">
                 </div>
             </div>
-            <div class="avaliacao-filme">
-                <h3>Avaliação:</h3>
-                <div class="estrelas">
-                    <span class="estrela">&#9733;</span>
-                    <span class="estrela">&#9733;</span>
-                    <span class="estrela">&#9733;</span>
-                    <span class="estrela">&#9733;</span>
-                    <span class="estrela">&#9733;</span>
+            <form action="{{ url_for('main.avaliar_filme', id=filme.id) }}" method="POST">
+                <div class="avaliacao-filme">
+                    <h3>Avaliação:</h3>
+                    <div class="estrelas">
+                        <input type="radio" name="rating" id="star5" value="5" />
+                        <label for="star5">&#9733;</label>
+            
+                        <input type="radio" name="rating" id="star4" value="4" />
+                        <label for="star4">&#9733;</label>
+            
+                        <input type="radio" name="rating" id="star3" value="3" />
+                        <label for="star3">&#9733;</label>
+            
+                        <input type="radio" name="rating" id="star2" value="2" />
+                        <label for="star2">&#9733;</label>
+            
+                        <input type="radio" name="rating" id="star1" value="1" />
+                        <label for="star1">&#9733;</label>
+                    </div>
+                    <button id="btnAvaliar" type="submit">Avaliar</button>
                 </div>
-            </div>
+            </form>
+            
+            
+            
         </section>
     </main>
 
