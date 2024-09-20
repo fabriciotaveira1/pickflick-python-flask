@@ -94,5 +94,61 @@ def avaliar_filme(id):
         
         # Redireciona para a página do filme após a avaliação
         return redirect(url_for('main.get_filme', id=movie_id))
+    
+# Rota para deletar avaliação do filme após a avaliação
+
+@main.route('/filme/avaliar/<int:id>/deletar', methods=['POST'])
+def deletar_avaliacao(id):
+    if request.method == 'POST':
+        # Recupera o user_id da sessão
+        usuario_id = session.get('usuario_id')
+        
+        # Recupera a avaliação do filme pelo id
+        avaliacao = session.query(Ratings).filter_by(user_id=usuario_id, movie_id=id).first()
+        
+        # Verifica se a avaliação existe
+        if avaliacao:
+            # Deleta a avaliação
+            session.delete(avaliacao)
+            session.commit()
+        
+        # Redireciona para a página do filme após a deleção
+        return redirect(url_for('main.get_filme', id=id))
+
+# Rota para editar avaliação do filme
+
+@main.route('/filme/avaliar/<int:id>/editar', methods=['POST'])
+def editar_avaliacao(id):
+    if request.method == 'POST':
+        # Recebe a nova avaliação do formulário
+        rating = request.form.get('rating')
+        
+        # Recupera o user_id da sessão
+        usuario_id = session.get('usuario_id')
+        
+        # Recupera a avaliação do filme pelo id
+        avaliacao = session.query(Ratings).filter_by(user_id=usuario_id, movie_id=id).first()
+        
+        # Verifica se a avaliação existe
+        if avaliacao:
+            # Atualiza a avaliação
+            avaliacao.rating = rating
+            session.commit()
+        
+        # Redireciona para a página do filme após a edição
+        return redirect(url_for('main.get_filme', id=id))
+
+# Rota para visualizar todas as avaliações
+
+@main.route('/avaliacoes')
+def get_avaliacoes():
+    # Recupera o user_id da sessão
+    usuario_id = session.get('usuario_id')
+    
+    # Recupera as avaliações do filme pelo user_id
+    avaliacoes = session.query(Ratings).filter_by(user_id=usuario_id).all()
+    
+    return render_template('avaliacoes.html', avaliacoes=avaliacoes)
+
 
     

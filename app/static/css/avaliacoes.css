@@ -1,0 +1,117 @@
+/* Estilização do header */
+header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* Estilização do main */
+main {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilização dos cards de avaliação */
+.card-avaliacao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 600px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #88888846;
+}
+
+.info-avaliacao h3 {
+    margin: 0 0 10px;
+}
+
+.botoes-avaliacao {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.botoes-avaliacao button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-editar {
+    background-color: #ffc107;
+    color: #fff;
+}
+
+.btn-editar:hover {
+    background-color: #e0a800;
+}
+
+.btn-deletar {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-deletar:hover {
+    background-color: #c82333;
+}
+
+/* Estilização da avaliação do filme */
+.avaliacao-filme {
+    margin-top: 10px;
+}
+
+.estrelas {
+    font-size: 24px;
+    display: inline-block;
+    direction: rtl; /* Reverte a direção para facilitar a seleção */
+    unicode-bidi: bidi-override; /* Faz com que a direção RTL funcione corretamente */
+}
+
+.estrelas input {
+    display: none; /* Esconde os inputs de rádio */
+}
+
+/* Estilos das estrelas */
+.estrelas label {
+    color: #ccc; /* Cor das estrelas não selecionadas */
+    cursor: pointer;
+    font-size: 24px;
+    display: inline-block;
+}
+
+/* Preenche as estrelas com cor ao passar o mouse */
+.estrelas input:checked ~ label,
+.estrelas label:hover ~ label,
+.estrelas label:hover {
+    color: #ffcc00; /* Cor das estrelas preenchidas */
+}
+
+#btnAvaliar {
+    background-color: #28a745; /* Cor de fundo verde */
+    color: white; /* Cor do texto branco */
+    padding: 10px 20px; /* Espaçamento interno */
+    border: none; /* Remove bordas */
+    border-radius: 4px; /* Bordas arredondadas */
+    font-size: 16px; /* Tamanho da fonte */
+    cursor: pointer; /* Mostra o ícone de mão no hover */
+    transition: background-color 0.3s ease; /* Animação suave para mudanças de cor */
+}
+
+#btnAvaliar:hover {
+    background-color: #218838; /* Cor mais escura no hover */
+}

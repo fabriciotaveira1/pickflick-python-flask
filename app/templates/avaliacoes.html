@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Avaliações</title>
+    <!-- Link para o CSS externo -->
+    <link rel="stylesheet" href="../static/css/avaliacoes.css">
+    <link rel="stylesheet" href="../static/css/header.css"> <!-- Link para o CSS externo -->
+    <link rel="stylesheet" href="../static/css/global.css"> <!-- Link para o CSS externo -->
+</head>
+
+<body>
+    <header>
+        <nav class="nav-up">
+            <ul class="navbar">
+                <li class="nav-left">PickFlick</li>
+                <li class="nav-middle">
+                    <a href="#pesquisar">Pesquisar Filmes</a>
+                    <a href="#recomendados">Filmes Recomendados</a>
+                    <a href="#recomendados">Minhas Avaliações</a>
+                </li>
+                <li class="nav-right">
+                    <a href="#" class="signup-button" id="openSignupModal">Sair</a>
+                </li>
+            </ul>
+        </nav>
+        <main>
+            <section id="avaliacoes">
+                <h2>Avaliações</h2>
+                <!-- Loop para listar avaliações -->
+                {% for avaliacao in avaliacoes %}
+                <div class="card-avaliacao">
+                    <div class="info-avaliacao">
+                        <h3>{{ avaliacao.movie.title }}</h3>
+                        <p><strong>Nota:</strong> {{ avaliacao.rating }} estrelas</p>
+                        <p><strong>Avaliado em:</strong> {{ avaliacao.date }}</p>
+                    </div>
+    
+                        <!-- Estrelas para editar a avaliação -->
+                        <form action="{{ url_for('main.editar_avaliacao', id=avaliacao.movie_id) }}" method="POST">
+                            <div class="avaliacao-filme">
+                                <div class="estrelas">
+                                    <input type="radio" name="rating" id="star5-{{ avaliacao.movie_id }}" value="5" />
+                                    <label for="star5-{{ avaliacao.movie_id }}">&#9733;</label>
+                        
+                                    <input type="radio" name="rating" id="star4-{{ avaliacao.movie_id }}" value="4" />
+                                    <label for="star4-{{ avaliacao.movie_id }}">&#9733;</label>
+                        
+                                    <input type="radio" name="rating" id="star3-{{ avaliacao.movie_id }}" value="3" />
+                                    <label for="star3-{{ avaliacao.movie_id }}">&#9733;</label>
+                        
+                                    <input type="radio" name="rating" id="star2-{{ avaliacao.movie_id }}" value="2" />
+                                    <label for="star2-{{ avaliacao.movie_id }}">&#9733;</label>
+                        
+                                    <input type="radio" name="rating" id="star1-{{ avaliacao.movie_id }}" value="1" />
+                                    <label for="star1-{{ avaliacao.movie_id }}">&#9733;</label>
+                                </div>
+                                <button id="btnAvaliar" type="submit">Atualizar Avaliação</button>
+                            </div>
+                        </form>
+    
+                        <!-- Botão de deletar avaliação -->
+                        <form action="{{ url_for('main.deletar_avaliacao', id=avaliacao.movie_id) }}" method="POST">
+                            <button type="submit" class="btn-deletar">Deletar Avaliação</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Sistema de Recomendação de Filmes</p>
+        </footer>
+</body>
+
+</html>
