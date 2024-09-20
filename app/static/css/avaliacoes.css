@@ -64,6 +64,8 @@ main {
 .btn-deletar {
     background-color: #dc3545;
     color: #fff;
+    cursor: pointer; /* Mostra o ícone de mão no hover */
+    transition: background-color 0.3s ease; /* Animação suave para mudanças de cor */
 }
 
 .btn-deletar:hover {
