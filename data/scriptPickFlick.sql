@@ -10,25 +10,14 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de filmes
-CREATE TABLE movies (
-    movie_id INT PRIMARY KEY AUTO_INCREMENT,
-    title VARCHAR(255) NOT NULL,
-    genre VARCHAR(100),
-    release_year YEAR,
-    duration INT,
-    director VARCHAR(100)
-);
-
--- Tabela de avaliações
+-- Tabela de avaliações (sem a tabela de filmes)
 CREATE TABLE ratings (
     rating_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT,
-    movie_id INT,
+    movie_api_id INT, -- ID do filme retornado pela API
     rating DECIMAL(2,1) CHECK (rating >= 0.0 AND rating <= 5.0),
     rated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (movie_id) REFERENCES movies(movie_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Tabela de preferências dos usuários

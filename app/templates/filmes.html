@@ -39,15 +39,15 @@
             <div id="resultados-pesquisa">
                 <!-- filmes adicionados dinamicamente -->
                 {% if resultados %}
-                    {% for filme in resultados %}
-                        <div class="card-filme" data-id="{{ filme.id }}">
-                            <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" alt="Capa do Filme">
-                            <h3>{{ filme.title }}</h3>
-                            <div class="hover-message">{{ filme.overview }}</div>
-                        </div>
-                    {% endfor %}
+                {% for filme in resultados %}
+                <div class="card-filme" data-id="{{ filme.id }}">
+                    <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}" alt="Capa do Filme">
+                    <h3>{{ filme.title }}</h3>
+                    <div class="hover-message">{{ filme.overview }}</div>
+                </div>
+                {% endfor %}
                 {% else %}
-                    <p>Nenhum resultado encontrado.</p>
+                <p>Nenhum resultado encontrado.</p>
                 {% endif %}
             </div>
         </section>
@@ -57,44 +57,21 @@
         <section id="recomendados">
             <h2>Filmes Recomendados</h2>
             <div id="lista-recomendados">
-                <!-- Lista de filmes recomendados  -->
-                <div class="card-filme">
-                    <img src="capa1.jpg" alt="Capa do Filme 1">
-                    <h3>Filme 1</h3>
-                    <div class="hover-message">Escolher Filme</div>
+                {% if filmes_recomendados %}
+                {% for filme in filmes_recomendados %}
+                <div class="card-filme" data-id="{{ filme.id }}">
+                    <img src="https://image.tmdb.org/t/p/w500{{ filme.poster_path }}"
+                        alt="Capa do Filme {{ filme.title }}">
+                    <h3>{{ filme.title }}</h3>
+                    <div class="hover-message">{{ filme.overview }}</div>
                 </div>
-                <div class="card-filme">
-                    <img src="capa1.jpg" alt="Capa do Filme 1">
-                    <h3>Filme 1</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
-                <div class="card-filme">
-                    <img src="capa1.jpg" alt="Capa do Filme 1">
-                    <h3>Filme 1</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
-                <div class="card-filme">
-                    <img src="capa1.jpg" alt="Capa do Filme 1">
-                    <h3>Filme 1</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
-                <div class="card-filme">
-                    <img src="capa1.jpg" alt="Capa do Filme 1">
-                    <h3>Filme 1</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
-                <div class="card-filme">
-                    <img src="capa1.jpg" alt="Capa do Filme 1">
-                    <h3>Filme 1</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
-                <div class="card-filme">
-                    <img src="capa1.jpg" alt="Capa do Filme 1">
-                    <h3>Filme 1</h3>
-                    <div class="hover-message">Escolher Filme</div>
-                </div>
+                {% endfor %}
+                {% else %}
+                <p>Nenhum filme recomendado no momento. Avalie mais filmes para receber recomendações.</p>
+                {% endif %}
             </div>
         </section>
+
     </main>
 
     <footer>
