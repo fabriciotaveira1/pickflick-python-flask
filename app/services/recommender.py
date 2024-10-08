@@ -1,76 +1,74 @@
 import pandas as pd
-from sklearn.neighbors import NearestNeighbors
-import os
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import CountVectorizer
+from surprise import Dataset, Reader, SVD
+
 
 class RecomendadorDeFilmesService:
-    
-    @staticmethod
-    def carregar_datasets():
-        """Carrega os datasets de ratings e filmes a partir de arquivos CSV."""
-        # Obtém o diretório atual do script
-        base_dir = os.path.dirname(os.path.abspath(__file__))  # Sobe um nível para a raiz do projeto
+    def __init__(self):
+        # Importando dataset de avaliações
+        self.df_avaliacoes = pd.read_csv('movie_datasets/ratings.csv')
+        self.df_avaliacoes.drop(columns=['timestamp'], inplace=True)
 
-        # Define os caminhos para os datasets
-        ratings_path = os.path.join(base_dir, 'movie_datasets', 'ratings.csv')
-        movies_path = os.path.join(base_dir, 'movie_datasets', 'movies.csv')
+        # Importando dataset de filmes
+        self.df_filmes = pd.read_csv('movie_datasets/movies.csv')
 
-        # Carrega os datasets
-        ratings = pd.read_csv(ratings_path)
-        movies = pd.read_csv(movies_path)
-        return ratings, movies
+        # Vetorização dos gêneros dos filmes
+        vetorizador = CountVectorizer()
+        self.matriz_generos = vetorizador.fit_transform(self.df_filmes['genres'])
 
-    @staticmethod
-    def preparar_dados(ratings):
-        """Converte o dataset de ratings em uma matriz de avaliações de filmes."""
-        matriz_avaliacoes = ratings.pivot_table(
-            index='userId', 
-            columns='movieId', 
-            values='rating', 
-            fill_value=0
-        )
-        return matriz_avaliacoes
+        # Similaridade de cosseno entre os gêneros
+        self.similaridade_generos = cosine_similarity(self.matriz_generos, self.matriz_generos)
 
-    @staticmethod
-    def combinar_avaliacoes(avaliacoes_reais, ratings):
-        """Combina as avaliações reais dos usuários com as do dataset de treino."""
-        df_avaliacoes_reais = pd.DataFrame({
-            'userId': [avaliacao.user_id for avaliacao in avaliacoes_reais],
-            'movieId': [avaliacao.movie_api_id for avaliacao in avaliacoes_reais],
-            'rating': [avaliacao.rating for avaliacao in avaliacoes_reais]
-        })
+        # Preparando os dados para o Surprise
+        reader = Reader(rating_scale=(1, 5))
 
-        combined_ratings = pd.concat([ratings, df_avaliacoes_reais], ignore_index=True)
+        # Renomeando colunas para o formato esperado pelo Surprise
+        self.df_avaliacoes = self.df_avaliacoes.rename(columns={'user_id': 'userId', 'movie_id': 'movieId'})
 
-        return combined_ratings
+        # Carregando os dados para o Surprise
+        dados_surprise = Dataset.load_from_df(self.df_avaliacoes[['userId', 'movieId', 'rating']], reader)
 
-    @staticmethod
-    def recomendar_filmes(usuario_id, avaliacoes_reais, ratings, n_recommendations=7):
-        """Usa o KNN para recomendar filmes para o usuário com base em suas avaliações."""
-        combined_ratings = RecomendadorDeFilmesService.combinar_avaliacoes(avaliacoes_reais, ratings)
-        matriz_avaliacoes = RecomendadorDeFilmesService.preparar_dados(combined_ratings)
+        # Treinando o modelo de filtragem colaborativa (SVD)
+        trainset = dados_surprise.build_full_trainset()
+        self.modelo_svd = SVD()
+        self.modelo_svd.fit(trainset)
 
-        if matriz_avaliacoes.empty or usuario_id not in matriz_avaliacoes.index:
-            return []  # Retorna uma lista vazia se não houver dados ou o usuário não tiver avaliações
+    def prever_avaliacao(self, usuario_id, filme_id):
+        # Prever a avaliação com o modelo SVD
+        predicao = self.modelo_svd.predict(usuario_id, filme_id).est
+        return predicao
 
-        n_neighbors = min(n_recommendations, matriz_avaliacoes.shape[0])
-        n_neighbors = max(1, n_neighbors)
+    def recomendar_filmes_hibrido(self, usuario_id, top_n=3):
+        recomendacoes = {}
 
-        knn = NearestNeighbors(metric='cosine', algorithm='brute')
-        knn.fit(matriz_avaliacoes.values)
+        # Percorrer todos os filmes para gerar uma pontuação ponderada por similaridade de gênero
+        for idx, row in self.df_filmes.iterrows():
+            filme_id = row['movieId']
 
-        user_index = matriz_avaliacoes.index.tolist().index(usuario_id)
-        distancias, indices = knn.kneighbors([matriz_avaliacoes.iloc[user_index].values], n_neighbors=n_neighbors)
+            # Prever a avaliação para o filme
+            avaliacao_prevista = self.prever_avaliacao(usuario_id, filme_id)
 
-        recomendacoes_filmes_ids = matriz_avaliacoes.columns[indices.flatten()].tolist()
+            # Calcular a média de similaridade com outros filmes já assistidos pelo usuário
+            similaridades = []
+            filmes_assistidos = self.df_avaliacoes[self.df_avaliacoes['userId'] == usuario_id]['movieId']
+            for filme_assistido_id in filmes_assistidos:
+                idx_assistido = self.df_filmes[self.df_filmes['movieId'] == filme_assistido_id].index[0]
+                idx_atual = self.df_filmes[self.df_filmes['movieId'] == filme_id].index[0]
+                similaridades.append(self.similaridade_generos[idx_atual, idx_assistido])
 
-        # Filtrar os filmes que o usuário já avaliou
-        avaliacoes_usuario = matriz_avaliacoes.iloc[user_index]
-        recomendacoes_filmes_ids = [movie_id for movie_id in recomendacoes_filmes_ids if avaliacoes_usuario[movie_id] == 0]
+            # Calcular a média de similaridades
+            if similaridades:
+                similaridade_media = sum(similaridades) / len(similaridades)
+            else:
+                similaridade_media = 0
 
-        return recomendacoes_filmes_ids[:n_recommendations]
+            # Calcular a pontuação final (ponderando a previsão pelo gênero)
+            score_final = avaliacao_prevista * similaridade_media
+            recomendacoes[filme_id] = score_final
 
+        # Ordenar as recomendações pelos scores e retornar os top N
+        filmes_recomendados = sorted(recomendacoes.items(), key=lambda x: x[1], reverse=True)[:top_n]
 
-    @staticmethod
-    def obter_informacoes_filmes(movie_ids, movies):
-        """Retorna os detalhes dos filmes recomendados."""
-        return movies[movies['movieId'].isin(movie_ids)][['movieId', 'title', 'genres']]
+        return [(self.df_filmes[self.df_filmes['movieId'] == filme_id]['title'].values[0], score)
+                for filme_id, score in filmes_recomendados]
