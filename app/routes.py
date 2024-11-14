@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session as session_flask
+from flask import Blueprint, render_template, request, redirect, url_for,jsonify, session as session_flask
 from .conn import session, User, Ratings, User_preferences
 from app.services import ApiFilmesService
 from app.services import RecomendadorDeFilmesService
@@ -6,6 +6,10 @@ from app.services import RecomendadorDeFilmesService
 main = Blueprint('main',__name__)
 api_key = '32fca79cddd1530919c06027ce60b04e'
 api_service = ApiFilmesService(api_key)
+
+# Inicialize o treinamento do modelo
+recomendador = RecomendadorDeFilmesService()
+recomendador.verificar_ou_treinar_modelo()
 
 @main.route('/')
 def index():
@@ -26,25 +30,7 @@ def logar():
         usuario_id = usuario_existente.user_id
         session_flask['usuario_id'] = usuario_id
 
-        # Carregar datasets uma vez (caso não tenha sido feito)
-        ratings, movies = RecomendadorDeFilmesService.carregar_datasets()
-
-        # Recuperar as avaliações do usuário
-        avaliacoes = session.query(Ratings).filter_by(user_id=usuario_id).all()
-
-        # Instanciando a classe de recomendar filmes
-        recommender = RecomendadorDeFilmesService()
-
-        # Obter os IDs dos filmes recomendados
-        recomendacoes_filmes_ids = recommender.recomendar_filmes(usuario_id, avaliacoes, ratings)
-
-        # Buscar filmes recomendados via API
-        filmes_recomendados = []
-        for movie_id in recomendacoes_filmes_ids:
-            filme_info = api_service.get_filme_by_id(movie_id)
-            filmes_recomendados.append(filme_info)
-
-        return render_template('filmes.html', nome=nome, email=email, usuario_id=usuario_id, filmes_recomendados=filmes_recomendados)
+        return render_template('filmes.html', nome=nome, email=email, usuario_id=usuario_id)
     
     else:
         error = 'Email ou senha inválido'
@@ -57,22 +43,8 @@ def filmes():
     nome = session_flask.get('nome')
     usuario_id = session_flask.get('usuario_id')
 
-    # Recupera as avaliações do usuário
-    avaliacoes = session.query(Ratings).filter_by(user_id=usuario_id).all()
 
-    # Instanciando a classe de recomendar filmes
-    recommender = RecomendadorDeFilmesService()
-
-    # Obter filmes recomendados
-    recomendacoes_filmes_ids = recommender.recomendar_filmes(usuario_id, avaliacoes)
-
-    # Buscar filmes recomendados via API
-    filmes_recomendados = []
-    for movie_id in recomendacoes_filmes_ids:
-        filme_info = api_service.get_filme_by_id(movie_id)
-        filmes_recomendados.append(filme_info)
-
-    return render_template('filmes.html', nome=nome, usuario_id=usuario_id, filmes_recomendados=filmes_recomendados)
+    return render_template('filmes.html', nome=nome, usuario_id=usuario_id)
     
 
 @main.route('/cadastrar', methods=['POST'])
@@ -125,24 +97,6 @@ def avaliar_filme(id):
         
         # Identifica o id do filme
         movie_id = id
-        
-        # Verifica se o usuário já fez a avaliação deste filme
-        avaliacao_existente = session.query(Ratings).filter_by(user_id=usuario_id, movie_api_id=movie_id).first()
-        
-        # Se não houver avaliação existente, adiciona uma nova
-        if not avaliacao_existente:
-            nova_avaliacao = Ratings(user_id=usuario_id, movie_api_id=movie_id, rating=rating)
-            session.add(nova_avaliacao)
-            session.commit()
-
-            # Recupera todas as avaliações do usuário para recomendar filmes
-            avaliacoes = session.query(Ratings).filter_by(user_id=usuario_id).all()
-
-            # Chama a função de recomendação
-            filmes_recomendados = RecomendadorDeFilmesService.recomendar_filmes(usuario_id, avaliacoes)
-
-            # Redireciona para a página do filme com os filmes recomendados
-            return redirect(url_for('main.filmes', id=movie_id, filmes_recomendados=filmes_recomendados))
 
         # Se já existe uma avaliação, redireciona normalmente
         return redirect(url_for('main.filmes', id=movie_id))
@@ -210,5 +164,12 @@ def get_avaliacoes():
         error = 'Erro ao buscar avaliações'
         return render_template('avaliacoes.html', avaliacoes=avaliacoes, error=error, zip=zip)
 
+@main.route('/recomendar', methods=['GET'])
+def recomendar():
+    usuario_id = request.args.get('usuario_id', type=int)
+    if not usuario_id:
+        return jsonify({'error': 'Usuário ID não fornecido'}), 400
 
+    recomendacoes = recomendador.recomendar_filmes_hibrido(usuario_id)
     
+    return jsonify(recomendacoes)

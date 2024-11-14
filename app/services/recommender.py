@@ -1,74 +1,90 @@
+import os
+import pickle
 import pandas as pd
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
-from surprise import Dataset, Reader, SVD
-
 
 class RecomendadorDeFilmesService:
     def __init__(self):
-        # Importando dataset de avaliações
-        self.df_avaliacoes = pd.read_csv('movie_datasets/ratings.csv')
-        self.df_avaliacoes.drop(columns=['timestamp'], inplace=True)
+        # Caminhos absolutos dos datasets
+        caminho_ratings = os.path.join('app', 'services', 'movie_datasets', 'ratings.csv')
+        caminho_movies = os.path.join('app', 'services', 'movie_datasets', 'movies.csv')
 
-        # Importando dataset de filmes
-        self.df_filmes = pd.read_csv('movie_datasets/movies.csv')
+        # Importando dataset de avaliações e filmes
+        self.df_avaliacoes = pd.read_csv(caminho_ratings)
+        self.df_filmes = pd.read_csv(caminho_movies)
+
+        # Processamento dos dados
+        self.df_avaliacoes.drop(columns=['timestamp'], inplace=True)
 
         # Vetorização dos gêneros dos filmes
         vetorizador = CountVectorizer()
         self.matriz_generos = vetorizador.fit_transform(self.df_filmes['genres'])
-
-        # Similaridade de cosseno entre os gêneros
         self.similaridade_generos = cosine_similarity(self.matriz_generos, self.matriz_generos)
 
-        # Preparando os dados para o Surprise
-        reader = Reader(rating_scale=(1, 5))
+        # Mapeamento de movieId para índice para eficiência
+        self.movie_index_map = {movie_id: idx for idx, movie_id in enumerate(self.df_filmes['movieId'])}
 
-        # Renomeando colunas para o formato esperado pelo Surprise
-        self.df_avaliacoes = self.df_avaliacoes.rename(columns={'user_id': 'userId', 'movie_id': 'movieId'})
+        # Inicializa e treina o modelo na inicialização
+        self.modelo_knn = self.verificar_ou_treinar_modelo()
 
-        # Carregando os dados para o Surprise
-        dados_surprise = Dataset.load_from_df(self.df_avaliacoes[['userId', 'movieId', 'rating']], reader)
+    def verificar_ou_treinar_modelo(self):
+        modelo_path = os.path.join('app', 'services', 'modelo_treinado', 'modelo_knn.pkl')
 
-        # Treinando o modelo de filtragem colaborativa (SVD)
-        trainset = dados_surprise.build_full_trainset()
-        self.modelo_svd = SVD()
-        self.modelo_svd.fit(trainset)
+        # Verifica se o modelo já foi treinado
+        if os.path.exists(modelo_path):
+            with open(modelo_path, 'rb') as file:
+                print("Modelo carregado a partir do arquivo.")
+                return pickle.load(file)
+        else:
+            print("Modelo não encontrado. Treinando novo modelo...")
 
-    def prever_avaliacao(self, usuario_id, filme_id):
-        # Prever a avaliação com o modelo SVD
-        predicao = self.modelo_svd.predict(usuario_id, filme_id).est
-        return predicao
+            # Treina o modelo KNN
+            X = self.df_avaliacoes[['userId', 'movieId']]
+            y = self.df_avaliacoes['rating']
+            
+            # Criação e treinamento do modelo KNN
+            modelo_knn = KNeighborsRegressor(n_neighbors=5, algorithm='auto', n_jobs=-1)  # Usa todos os núcleos de CPU disponíveis
+            modelo_knn.fit(X, y)
+
+            # Salva o modelo treinado
+            os.makedirs(os.path.dirname(modelo_path), exist_ok=True)
+            with open(modelo_path, 'wb') as file:
+                pickle.dump(modelo_knn, file)
+            
+            print("Modelo treinado e salvo com sucesso.")
+            return modelo_knn
+
+    def calcular_media_avaliacao_usuario(self, usuario_id):
+        avaliacoes_usuario = self.df_avaliacoes[self.df_avaliacoes['userId'] == usuario_id]['rating']
+        return avaliacoes_usuario.mean() if not avaliacoes_usuario.empty else self.df_avaliacoes['rating'].mean()
 
     def recomendar_filmes_hibrido(self, usuario_id, top_n=3):
+        media_avaliacao_usuario = self.calcular_media_avaliacao_usuario(usuario_id)
+        filmes_assistidos = self.df_avaliacoes[self.df_avaliacoes['userId'] == usuario_id]['movieId']
+        
         recomendacoes = {}
 
-        # Percorrer todos os filmes para gerar uma pontuação ponderada por similaridade de gênero
         for idx, row in self.df_filmes.iterrows():
             filme_id = row['movieId']
 
-            # Prever a avaliação para o filme
-            avaliacao_prevista = self.prever_avaliacao(usuario_id, filme_id)
-
-            # Calcular a média de similaridade com outros filmes já assistidos pelo usuário
-            similaridades = []
-            filmes_assistidos = self.df_avaliacoes[self.df_avaliacoes['userId'] == usuario_id]['movieId']
-            for filme_assistido_id in filmes_assistidos:
-                idx_assistido = self.df_filmes[self.df_filmes['movieId'] == filme_assistido_id].index[0]
-                idx_atual = self.df_filmes[self.df_filmes['movieId'] == filme_id].index[0]
-                similaridades.append(self.similaridade_generos[idx_atual, idx_assistido])
-
-            # Calcular a média de similaridades
-            if similaridades:
-                similaridade_media = sum(similaridades) / len(similaridades)
+            # Similaridade média com filmes assistidos
+            if not filmes_assistidos.empty:
+                idx_atual = self.movie_index_map.get(filme_id, None)
+                if idx_atual is not None:
+                    indices_assistidos = [self.movie_index_map[movie_id] for movie_id in filmes_assistidos if movie_id in self.movie_index_map]
+                    similaridades = self.similaridade_generos[idx_atual, indices_assistidos]
+                    similaridade_media = similaridades.mean()
+                else:
+                    similaridade_media = 0
             else:
                 similaridade_media = 0
 
-            # Calcular a pontuação final (ponderando a previsão pelo gênero)
-            score_final = avaliacao_prevista * similaridade_media
+            # Score final usando a média de avaliação
+            score_final = media_avaliacao_usuario * similaridade_media
             recomendacoes[filme_id] = score_final
 
-        # Ordenar as recomendações pelos scores e retornar os top N
         filmes_recomendados = sorted(recomendacoes.items(), key=lambda x: x[1], reverse=True)[:top_n]
-
-        return [(self.df_filmes[self.df_filmes['movieId'] == filme_id]['title'].values[0], score)
-                for filme_id, score in filmes_recomendados]
+        return [{'id': filme_id, 'titulo': self.df_filmes.loc[self.df_filmes['movieId'] == filme_id, 'title'].values[0]} 
+                for filme_id, _ in filmes_recomendados]
