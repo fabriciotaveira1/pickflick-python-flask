@@ -1,10 +1,10 @@
 import requests
 
 class ApiFilmesService:
-    def __init__(self, api_key):
+    def __init__(self, api_key, language='pt-BR'):
         self.base_url = 'https://api.themoviedb.org/3/movie/'
         self.api_key = api_key
-        self.language = 'pt-BR'
+        self.language = language
         self.filter_url = 'https://api.themoviedb.org/3/search/movie?api_key='  # URL para busca de filmes
 
     def _build_url(self, endpoint, additional_params=''):
