@@ -60,6 +60,11 @@ def logar():
         return render_template('index.html', error=error)
 
 
+#rota para sair e encerrar sessão
+@main.route('/sair')
+def sair():
+    session_flask.clear()
+    return redirect(url_for('main.index'))
 
 # Rota para retornar para a página filmes
 @main.route('/filmes')
