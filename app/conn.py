@@ -6,7 +6,7 @@ import urllib.parse
 
 # Configurações de conexão
 user = 'root'
-password = urllib.parse.quote_plus('')
+password = urllib.parse.quote_plus('senai@123')
 host = 'localhost'
 database = 'pickflick'
 

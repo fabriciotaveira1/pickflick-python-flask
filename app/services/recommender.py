@@ -117,4 +117,3 @@ class RecomendadorDeFilmesService:
         filmes_recomendados = sorted(recomendacoes.items(), key=lambda x: x[1], reverse=True)[:top_n]
         return [{'id': filme_id, 'titulo': self.df_filmes.loc[self.df_filmes['movieId'] == filme_id, 'title'].values[0]} 
                 for filme_id, _ in filmes_recomendados]
-

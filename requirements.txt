@@ -10,14 +10,17 @@ itsdangerous==2.2.0
 Jinja2==3.1.4
 joblib==1.4.2
 MarkupSafe==2.1.5
-numpy==2.1.0
+numpy==1.26.0
 pandas==2.2.2
+pybind11==2.13.6
 PyMySQL==1.1.1
 python-dateutil==2.9.0.post0
 pytz==2024.1
 requests==2.32.3
 scikit-learn==1.5.1
+scikit-surprise==1.1.4
 scipy==1.14.1
+setuptools==75.4.0
 six==1.16.0
 SQLAlchemy==2.0.32
 threadpoolctl==3.5.0
@@ -25,3 +28,4 @@ typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.2.2
 Werkzeug==3.0.4
+wheel==0.45.0
