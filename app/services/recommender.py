@@ -78,6 +78,7 @@ class RecomendadorDeFilmesService:
         # Calcula a média das notas do usuário
         media_avaliacao = sum(avaliacao['rating'] for avaliacao in avaliacoes_usuario) / len(avaliacoes_usuario)
         return media_avaliacao
+    
     def recomendar_filmes_hibrido(self, usuario_id, avaliacoes_usuario, top_n=8):
         media_avaliacao_usuario = self.calcular_media_avaliacao_usuario(avaliacoes_usuario)
 
