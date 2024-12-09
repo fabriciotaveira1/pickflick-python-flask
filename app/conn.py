@@ -1,12 +1,12 @@
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.automap import automap_base
-from app.models import Ratings, User_preferences, User
+from app.models import Ratings, User
 import urllib.parse
 
 # Configurações de conexão
 user = 'root'
-password = urllib.parse.quote_plus('senai@123')
+password = urllib.parse.quote_plus('')
 host = 'localhost'
 database = 'pickflick'
 
@@ -36,5 +36,3 @@ User = Base.classes.users
 # Ratings = Base.classes.ratings
 Ratings = Base.classes.ratings
 
-# User_preferences = Base.classes.user_preferences
-User_preferences = Base.classes.user_preferences

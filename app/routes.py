@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for,jsonify, session as session_flask
-from .conn import session, User, Ratings, User_preferences
+from .conn import session, User, Ratings
 from app.services import ApiFilmesService
 from app.services import RecomendadorDeFilmesService
 import pandas as pd
+import bcrypt
 
 main = Blueprint('main',__name__)
 api_key = '32fca79cddd1530919c06027ce60b04e'
@@ -21,43 +22,47 @@ def index():
 def logar():
     if request.method == 'POST':
         email = request.form.get('email')
-        password = request.form.get('senha')
+        password = request.form.get('senha').strip()  # Remove espaços desnecessários
     else:
         return redirect(url_for('main.index'))
 
     # Verifica se o usuário existe
     usuario_existente = session.query(User).filter_by(email=email).first()
-
-    if usuario_existente and password == usuario_existente.password:
-        nome = usuario_existente.username
-        usuario_id = usuario_existente.user_id
-        session_flask['usuario_id'] = usuario_id
-
-        # Recupera as avaliações do filme pelo user_id
-        avaliacoes = session.query(Ratings).filter_by(user_id=usuario_id).all()
-
-        # Buscar as avaliações do banco de dados
-        avaliacoes_usuario = [
-            {
-                'movie_api_id': avaliacao.movie_api_id,
-                'rating': avaliacao.rating
-            }
-            for avaliacao in avaliacoes
-        ]
-        recomendacoes_ids = recomendador.recomendar_filmes_hibrido(usuario_id, avaliacoes_usuario)
-        
-        # Agora, obtemos os detalhes dos filmes recomendados usando o método da API
-        filmes_recomendados = []
-        for recomendacao in recomendacoes_ids:
-            filme = recomendacao
-            filmes_recomendados.append(filme)
-
-        # Renderiza a página de filmes com os filmes recomendados
-        return render_template('filmes.html', nome=nome, email=email, usuario_id=usuario_id, filmes_recomendados=filmes_recomendados)
     
-    else:
-        error = 'Email ou senha inválido'
-        return render_template('index.html', error=error)
+    if usuario_existente:
+        print(f"Senha inserida pelo usuário: {password}")
+        print(f"Hash do banco de dados: {usuario_existente.password}")
+
+        # Verifica se a senha está correta
+        if bcrypt.checkpw(password.encode('utf-8'), usuario_existente.password.encode('utf-8')):
+            nome = usuario_existente.username
+            usuario_id = usuario_existente.user_id
+            session_flask['usuario_id'] = usuario_id
+
+            # Recupera as avaliações do filme pelo user_id
+            avaliacoes = session.query(Ratings).filter_by(user_id=usuario_id).all()
+
+            # Buscar as avaliações do banco de dados
+            avaliacoes_usuario = [
+                {
+                    'movie_api_id': avaliacao.movie_api_id,
+                    'rating': avaliacao.rating
+                }
+                for avaliacao in avaliacoes
+            ]
+            recomendacoes_ids = recomendador.recomendar_filmes_hibrido(usuario_id, avaliacoes_usuario)
+            
+            # Agora, obtemos os detalhes dos filmes recomendados usando o método da API
+            filmes_recomendados = []
+            for recomendacao in recomendacoes_ids:
+                filme = recomendacao
+                filmes_recomendados.append(filme)
+
+            # Renderiza a página de filmes com os filmes recomendados
+            return render_template('filmes.html', nome=nome, email=email, usuario_id=usuario_id, filmes_recomendados=filmes_recomendados)
+    
+    error = 'Email ou senha inválido'
+    return render_template('index.html', error=error)
 
 
 #rota para sair e encerrar sessão
@@ -97,7 +102,6 @@ def filmes():
     except Exception as e:
         return render_template('filmes.html', nome=nome, usuario_id=usuario_id, error=f'Erro ao recuperar filmes recomendados: {e}')
     
-
 @main.route('/cadastrar', methods=['POST'])
 def cadastrar():
     if request.method == 'POST':
@@ -105,13 +109,17 @@ def cadastrar():
         email = request.form.get('email_cadastro')
         senha = request.form.get('senha_cadastro')
         senhaConfirmada = request.form.get('confirm_senha')
-        
+
         if senha == senhaConfirmada:
             if session.query(User).filter_by(email=email).first():
                 error = 'Email já cadastrado'
                 return render_template('index.html', error=error)
             
-            novo_usuario = User(username=nome, email=email, password=senha)
+            # Hashear a senha
+            senha_hash = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            
+            # Criar o novo usuário
+            novo_usuario = User(username=nome, email=email, password=senha_hash)
             session.add(novo_usuario)
             session.commit()
             sucess = 'Usuário cadastrado com sucesso, faça seu login!'
@@ -129,7 +137,7 @@ def pesquisar():
     try:
         resultados = api_service.filtrar_filmes(nome_filme)
         
-                # Recupera as avaliações do filme pelo user_id
+        # Recupera as avaliações do filme pelo user_id
         avaliacoes = session.query(Ratings).filter_by(user_id=usuario_id).all()
 
         # Buscar as avaliações do banco de dados
@@ -319,3 +327,34 @@ def recomendar():
     recomendacoes = recomendador.recomendar_filmes_hibrido(usuario_id, avaliacoes_usuario)
 
     return jsonify(recomendacoes)
+
+@main.route('/alterar_senha/<int:usuario_id>', methods=['POST'])
+def alterar_senha(usuario_id):
+    if request.method == 'POST':
+        senha_atual = request.form.get('senha_atual')
+        nova_senha = request.form.get('nova_senha')
+        confirmar_nova_senha = request.form.get('confirm_nova_senha')
+        
+        # Recupera o usuário do banco de dados
+        user = session.query(User).filter_by(user_id=usuario_id).first()
+        
+        if not user:
+            return jsonify({'error': 'Usuário não encontrado'}), 404
+
+        # Verifica se a senha atual está correta
+        if not bcrypt.checkpw(senha_atual.encode('utf-8'), user.password.encode('utf-8')):
+            return jsonify({'error': 'Senha atual inválida'}), 401
+        
+        # Verifica se a nova senha e a confirmação são iguais
+        if nova_senha != confirmar_nova_senha:
+            return jsonify({'error': 'Nova senha e confirmação devem ser iguais'}), 400
+        
+        # Hasheia a nova senha e atualiza no banco
+        nova_senha_hash = bcrypt.hashpw(nova_senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        user.password = nova_senha_hash
+        session.commit()
+        
+        success = 'Senha alterada com sucesso'
+        return redirect(url_for('main.filmes', id=usuario_id, success=success))
+
+ 

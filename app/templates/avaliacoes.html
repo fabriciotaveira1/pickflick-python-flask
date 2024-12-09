@@ -23,61 +23,107 @@
                 </li>
                 <li class="nav-right">
                     <a href="/sair" class="signup-button" id="openSignupModal">Sair</a>
+                    <button class="change-password-button" id="openChangePasswordModal">Alterar Senha</button>
                 </li>
             </ul>
         </nav>
+
+        <!-- MODAL CHANGE PASSWORD -->
+
+        <!-- Modal de Alteração de Senha -->
+        <div id="changePasswordModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" id="closeChangePasswordModal">&times;</span>
+                <h2>Alterar Senha</h2>
+                <form action="/alterar_senha/{{ usuario_id }}" method="POST">
+                    <label for="senhaAtual">Senha Atual:</label>
+                    <input type="password" id="senhaAtual" name="senha_atual" required>
+
+                    <label for="novaSenha">Nova Senha:</label>
+                    <input type="password" id="novaSenha" name="nova_senha" required>
+
+                    <label for="confirmNovaSenha">Confirme a Nova Senha:</label>
+                    <input type="password" id="confirmNovaSenha" name="confirm_nova_senha" required>
+
+                    <button type="submit" class="modal-submit-button">Salvar</button>
+                </form>
+            </div>
+        </div>
+
         <main>
             <section id="avaliacoes">
                 <h2> Minhas Avaliações</h2>
                 <!-- Loop para listar avaliações e filmes -->
                 {% if avaliacoes %}
-    <!-- Loop para listar avaliações e filmes -->
-    {% for avaliacao, filme in zip(avaliacoes, filmes) %}
-        <div class="card-avaliacao">
-            <div class="info-avaliacao">
-                <h3>{{ filme.title }}</h3>
-                <p><strong>Nota:</strong> {{ avaliacao.rating }} estrelas</p>
-                <p><strong>Avaliado em:</strong> {{ avaliacao.date }}</p>
-            </div>
-
-            <!-- Estrelas para editar a avaliação -->
-            <form action="{{ url_for('main.editar_avaliacao', id=avaliacao.movie_api_id) }}" method="POST">
-                <div class="avaliacao-filme">
-                    <div class="estrelas">
-                        <input type="radio" name="rating" id="star5-{{ avaliacao.movie_api_id }}" value="5" {% if avaliacao.rating == 5 %}checked{% endif %}/>
-                        <label for="star5-{{ avaliacao.movie_api_id }}">&#9733;</label>
-
-                        <input type="radio" name="rating" id="star4-{{ avaliacao.movie_api_id }}" value="4" {% if avaliacao.rating == 4 %}checked{% endif %}/>
-                        <label for="star4-{{ avaliacao.movie_api_id }}">&#9733;</label>
-
-                        <input type="radio" name="rating" id="star3-{{ avaliacao.movie_api_id }}" value="3" {% if avaliacao.rating == 3 %}checked{% endif %}/>
-                        <label for="star3-{{ avaliacao.movie_api_id }}">&#9733;</label>
-
-                        <input type="radio" name="rating" id="star2-{{ avaliacao.movie_api_id }}" value="2" {% if avaliacao.rating == 2 %}checked{% endif %}/>
-                        <label for="star2-{{ avaliacao.movie_api_id }}">&#9733;</label>
-
-                        <input type="radio" name="rating" id="star1-{{ avaliacao.movie_api_id }}" value="1" {% if avaliacao.rating == 1 %}checked{% endif %}/>
-                        <label for="star1-{{ avaliacao.movie_api_id }}">&#9733;</label>
+                <!-- Loop para listar avaliações e filmes -->
+                {% for avaliacao, filme in zip(avaliacoes, filmes) %}
+                <div class="card-avaliacao">
+                    <div class="info-avaliacao">
+                        <h3>{{ filme.title }}</h3>
+                        <p><strong>Nota:</strong> {{ avaliacao.rating }} estrelas</p>
+                        <p><strong>Avaliado em:</strong> {{ avaliacao.date }}</p>
                     </div>
-                    <button id="btnAvaliar" type="submit">Atualizar Avaliação</button>
-                </div>
-            </form>
 
-            <!-- Botão de deletar avaliação -->
-            <form action="{{ url_for('main.deletar_avaliacao', id=avaliacao.movie_api_id) }}" method="POST">
-                <button type="submit" class="btn-deletar">Deletar Avaliação</button>
-            </form>
-        </div>
-    {% endfor %}
-{% else %}
-    <p>Nenhum filme foi avaliado ainda.</p>
-{% endif %}
+                    <!-- Estrelas para editar a avaliação -->
+                    <form action="{{ url_for('main.editar_avaliacao', id=avaliacao.movie_api_id) }}" method="POST">
+                        <div class="avaliacao-filme">
+                            <div class="estrelas">
+                                <input type="radio" name="rating" id="star5-{{ avaliacao.movie_api_id }}" value="5" {%
+                                    if avaliacao.rating==5 %}checked{% endif %} />
+                                <label for="star5-{{ avaliacao.movie_api_id }}">&#9733;</label>
+
+                                <input type="radio" name="rating" id="star4-{{ avaliacao.movie_api_id }}" value="4" {%
+                                    if avaliacao.rating==4 %}checked{% endif %} />
+                                <label for="star4-{{ avaliacao.movie_api_id }}">&#9733;</label>
+
+                                <input type="radio" name="rating" id="star3-{{ avaliacao.movie_api_id }}" value="3" {%
+                                    if avaliacao.rating==3 %}checked{% endif %} />
+                                <label for="star3-{{ avaliacao.movie_api_id }}">&#9733;</label>
+
+                                <input type="radio" name="rating" id="star2-{{ avaliacao.movie_api_id }}" value="2" {%
+                                    if avaliacao.rating==2 %}checked{% endif %} />
+                                <label for="star2-{{ avaliacao.movie_api_id }}">&#9733;</label>
+
+                                <input type="radio" name="rating" id="star1-{{ avaliacao.movie_api_id }}" value="1" {%
+                                    if avaliacao.rating==1 %}checked{% endif %} />
+                                <label for="star1-{{ avaliacao.movie_api_id }}">&#9733;</label>
+                            </div>
+                            <button id="btnAvaliar" type="submit">Atualizar Avaliação</button>
+                        </div>
+                    </form>
+
+                    <!-- Botão de deletar avaliação -->
+                    <form action="{{ url_for('main.deletar_avaliacao', id=avaliacao.movie_api_id) }}" method="POST">
+                        <button type="submit" class="btn-deletar">Deletar Avaliação</button>
+                    </form>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p>Nenhum filme foi avaliado ainda.</p>
+                {% endif %}
             </section>
         </main>
 
         <footer>
             <p>&copy; 2024 Sistema de Recomendação de Filmes</p>
         </footer>
+        <script>
+            document.getElementById('openChangePasswordModal').addEventListener('click', () => {
+                document.getElementById('changePasswordModal').style.display = 'block';
+            });
+
+            document.getElementById('closeChangePasswordModal').addEventListener('click', () => {
+                document.getElementById('changePasswordModal').style.display = 'none';
+            });
+
+            window.addEventListener('click', (event) => {
+                const modal = document.getElementById('changePasswordModal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+        </script>
 </body>
 
 </html>

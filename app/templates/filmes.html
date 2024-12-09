@@ -22,16 +22,38 @@
                     <a href="/avaliacoes">Minhas Avaliações</a>
                 </li>
                 <li class="nav-right">
-                    <a href="/sair" class="signup-button" id="openSignupModal">Sair</a>
+                    <a href="/sair" class="signup-button" id="logout">Sair</a>
+                    <button class="change-password-button" id="openChangePasswordModal">Alterar Senha</button>
                 </li>
             </ul>
         </nav>
     </header>
 
+    <!-- MODAL CHANGE PASSSWORD -->
+    <!-- Modal de Alteração de Senha -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content-password">
+            <span class="close-button" id="closeChangePasswordModal">&times;</span>
+            <h2>Alterar Senha</h2>
+            <form action="/alterar_senha/{{ usuario_id }}" method="POST">
+                <label for="senhaAtual">Senha Atual:</label>
+                <input type="password" id="senhaAtual" name="senha_atual" required>
+
+                <label for="novaSenha">Nova Senha:</label>
+                <input type="password" id="novaSenha" name="nova_senha" required>
+
+                <label for="confirmNovaSenha">Confirme a Nova Senha:</label>
+                <input type="password" id="confirmNovaSenha" name="confirm_nova_senha" required>
+
+                <button type="submit" class="modal-submit-button">Salvar</button>
+            </form>
+        </div>
+    </div>
+
     <main>
         <!-- Seção de Pesquisa -->
         <section id="pesquisar">
-            <h3 style="text-align: center;">Seja Bem-vindo {{ nome }}</h3>
+            <h3 style="text-align: center;">Seja Bem-vindo</h3>
             <form id="form-pesquisar" class="form-pesquisar" method="POST" action="{{ url_for('main.pesquisar') }}">
                 <input type="text" name="nome_filme" placeholder="Digite o nome do filme...">
                 <button type="submit">Pesquisar</button>
@@ -60,9 +82,8 @@
                 {% if filmes_recomendados %}
                 {% for filme in filmes_recomendados %}
                 <div class="card-filme" data-id="{{ filme.id }}">
-                    <img src="../static/assets/capa_recomendados.jpg"
-                        alt="Capa do Filme {{ filme.titulo }}">
-                    <h3>{{ filme.titulo }}</h3>
+                    <img src="../static/assets/capa_recomendados.jpg" alt="Capa do Filme {{ filme.title }}">
+                    <h3>{{ filme.title }}</h3>
                     <div class="hover-message">{{ filme.overview }}</div>
                 </div>
                 {% endfor %}
@@ -79,6 +100,23 @@
     </footer>
 
     <script src="../static/js/filmes.js"></script>
+    <script>
+        document.getElementById('openChangePasswordModal').addEventListener('click', () => {
+            document.getElementById('changePasswordModal').style.display = 'block';
+        });
+
+        document.getElementById('closeChangePasswordModal').addEventListener('click', () => {
+            document.getElementById('changePasswordModal').style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            const modal = document.getElementById('changePasswordModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+    </script>
 </body>
 
 </html>
